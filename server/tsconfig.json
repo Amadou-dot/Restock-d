@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "../"
+  },
+  "include": ["src/**/*.ts", "../types/express.d.ts", "../types/session.d.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
