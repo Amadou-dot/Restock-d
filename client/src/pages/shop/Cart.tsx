@@ -3,8 +3,8 @@ import type { PopulatedCartItem } from '../../../../types/Cart';
 import { useCart } from '../../api/cart';
 import Alert from '../../components/Alert';
 import CartItemCard from '../../components/CartItemCard';
+import CheckoutPageLink from '../../components/ui/CheckoutPageLink';
 import ClearCartBtn from '../../components/ui/ClearCartBtn';
-import PlaceOrderBtn from '../../components/ui/PlaceOrderBtn';
 import { AuthProtected } from '../../utils/authUtils';
 
 export default function Cart() {
@@ -37,11 +37,11 @@ export default function Cart() {
                     </p>
                   </div>
                 </div>
-                <CartList cartItems={cart.items} />{' '}
+                <CartList cartItems={cart.items} />
                 <div className='mt-8 p-6 bg-gray-50 rounded-lg'>
                   <div className='flex gap-3'>
                     <ClearCartBtn />
-                    <PlaceOrderBtn />
+                    <CheckoutPageLink />
                   </div>
                 </div>
               </div>
@@ -53,11 +53,11 @@ export default function Cart() {
   );
 }
 
-const CartList = ({ cartItems }: { cartItems: PopulatedCartItem[] }) => {
+export const CartList = ({ cartItems, canModify }: { cartItems: PopulatedCartItem[], canModify?: boolean }) => {
   return (
     <div className='space-y-3'>
       {cartItems.map(item => (
-        <CartItemCard key={item.productId.toString()} item={item} />
+        <CartItemCard key={item.productId.toString()} canModify={canModify} item={item} />
       ))}
     </div>
   );

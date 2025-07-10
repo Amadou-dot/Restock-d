@@ -17,7 +17,7 @@ export interface Product extends ProductInput {
   __v: number;
 }
 
-// New interface for products response with pagination info
+// Interface for products response with pagination info
 export interface ProductsResponse {
   products: Product[];
   totalPages: number;

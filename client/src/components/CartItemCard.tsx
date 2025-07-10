@@ -5,7 +5,14 @@ import type { PopulatedCartItem } from '../../../types/Cart';
 import { Button } from '@heroui/button';
 import { useAddToCart, useRemoveFromCart } from '../api/cart';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
-export default function CartItemCard({ item }: { item: PopulatedCartItem }) {
+
+export default function CartItemCard({
+  item,
+  canModify = true,
+}: {
+  item: PopulatedCartItem;
+  canModify?: boolean;
+}) {
   const { mutate: addToCart, isPending: isLoading, error } = useAddToCart();
   const {
     mutate: decreaseQuantity,
@@ -61,21 +68,25 @@ export default function CartItemCard({ item }: { item: PopulatedCartItem }) {
                 {product.name}
               </h3>
               <div className='flex items-center gap-2'>
-                <Button
-                  color='primary'
-                  disabled={isPending}
-                  size='sm'
-                  onPress={handleDecreaseQuantity}>
-                  <FaMinus size={12} />
-                </Button>
-                <p>{item.quantity}</p>
-                <Button
-                  color='primary'
-                  disabled={isPending}
-                  size='sm'
-                  onPress={handleAddToCart}>
-                  <FaPlus size={12} />
-                </Button>
+                {canModify && (
+                  <>
+                    <Button
+                      color='primary'
+                      disabled={isPending}
+                      size='sm'
+                      onPress={handleDecreaseQuantity}>
+                      <FaMinus size={12} />
+                    </Button>
+                    <p>{item.quantity}</p>
+                    <Button
+                      color='primary'
+                      disabled={isPending}
+                      size='sm'
+                      onPress={handleAddToCart}>
+                      <FaPlus size={12} />
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
             <p className='text-sm text-gray-500 mt-1 line-clamp-2'>

@@ -3,15 +3,17 @@ import NavigationBar from './components/NavigationBar';
 import AddProduct from './pages/admin/AddProduct';
 import AdminProductList from './pages/admin/AdminProductList';
 import Login from './pages/Login';
+import NewPassword from './pages/NewPassword';
 import PageNotFound from './pages/PageNotFound';
 import PasswordReset from './pages/PasswordReset';
 import Cart from './pages/shop/Cart';
+import Checkout from './pages/shop/Checkout';
 import Orders from './pages/shop/Orders';
+import PaymentSuccess from './pages/shop/PaymentSuccess';
 import ProductDetail from './pages/shop/ProductDetail';
 import ProductList from './pages/shop/ProductList';
 import Shop from './pages/shop/Shop';
 import SignUp from './pages/SignUp';
-import NewPassword from './pages/NewPassword';
 
 function App() {
   return (
@@ -28,6 +30,10 @@ function App() {
             <Route element={<ProductDetail />} path=':id' />
           </Route>
           <Route element={<Orders />} path='/orders' />
+          <Route path='/checkout'>
+            <Route index element={<Checkout />}  />
+            <Route element={<PaymentSuccess />} path='success' />
+          </Route>
           <Route element={<Login />} path='/login' />
           <Route element={<SignUp />} path='/signup' />
           <Route element={<PasswordReset />} path='/password-reset' />

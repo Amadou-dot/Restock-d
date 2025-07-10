@@ -1,5 +1,4 @@
-import { addToast } from '@heroui/toast';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type { Order } from '../../../types/Order';
 import { apiFetch } from './utils';
 
@@ -9,29 +8,14 @@ const SERVER_URL = 'http://localhost:3000/api';
  * Custom hook to place an order for the current user's cart.
  */
 export const usePlaceOrder = () => {
-  const queryClient = useQueryClient();
   return useMutation({
+    mutationKey: ['placeOrder'],
     mutationFn: async () => {
-      return apiFetch<void>(`${SERVER_URL}/placeOrder`, {
+      return apiFetch<{ id: string; url: string }>(`${SERVER_URL}/placeOrder`, {
         method: 'POST',
-      });
-    },
-    onSuccess: () => {
-      addToast({
-        title: 'Order placed successfully',
-        description: 'Your order has been placed successfully.',
-        color: 'success',
-      });
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      }, 'data'); // Specify 'data' as the key since server uses 'data' for this response
     },
     retry: 1,
-    onError: (error: Error) => {
-      addToast({
-        title: 'Failed to place order',
-        description: error.message,
-        color: 'danger',
-      });
-    },
   });
 };
 
