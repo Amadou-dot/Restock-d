@@ -26,14 +26,14 @@ const store = new MongoDBStore({
   collection: 'sessions',
   expires: 1000 * 60 * 60 * 24 * 1, // 1 day
 });
-// const csrfProtection = csrf({});
 
+// Allow CORS for React app
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
   })
-); // Allow CORS for React app
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(
@@ -49,7 +49,7 @@ app.use(
     },
   })
 );
-// app.use(csrfProtection);
+
 app.use('/api', productsRouter);
 app.use('/api/auth', authRouter);
 app.use('/api', cartRouter);

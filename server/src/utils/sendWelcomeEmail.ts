@@ -8,11 +8,11 @@ export async function sendWelcomeEmail(
   await resend.emails.send({
     from: `Welcome to ${process.env.APP_NAME} <${process.env.EMAIL_FROM}>`,
     to: email,
-    subject: 'Welcome to Shop',
+    subject: `Welcome to ${process.env.APP_NAME}`,
     html: `
           <p>Hi ${name},</p>
-          <p>Welcome to Shop! We're excited to have you on board.</p>
+          <p>Welcome to ${process.env.APP_NAME}! We're excited to have you on board.</p>
           <p>Best regards,</p>
-          <p>The Shop Team</p>`,
+          <p>The ${process.env.APP_NAME} Team</p>`,
   });
 }
