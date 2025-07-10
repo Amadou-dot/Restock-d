@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@heroui/modal';
 import { IoTrashOutline } from 'react-icons/io5';
-import type { Product } from '../../../../types/Product';
+import type { Product } from '../../types/Product';
 import { useDeleteProduct } from '../../api/products';
 import ErrorMessage from '../../components/ErrorMessage';
 import WarningMessage from '../../components/WarningMessage';

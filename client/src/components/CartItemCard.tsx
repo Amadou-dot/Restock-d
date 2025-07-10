@@ -1,6 +1,6 @@
 import { Card, CardBody } from '@heroui/card';
 import { Image } from '@heroui/image';
-import type { PopulatedCartItem } from '../../../types/Cart';
+import type { PopulatedCartItem } from '../types/Cart';
 
 import { Button } from '@heroui/button';
 import { useAddToCart, useRemoveFromCart } from '../api/cart';

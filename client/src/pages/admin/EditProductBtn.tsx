@@ -7,7 +7,7 @@ import {
   useDisclosure,
 } from '@heroui/modal';
 import { IoCreateOutline } from 'react-icons/io5';
-import type { Product, ProductInput } from '../../../../types/Product';
+import type { Product, ProductInput } from '../../types/Product';
 import { useEditProduct } from '../../api/products';
 import ProductForm, {
   type ProductFormEditData,

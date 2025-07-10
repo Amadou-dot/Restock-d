@@ -2,13 +2,12 @@ import { Button } from '@heroui/button';
 import { Form } from '@heroui/form';
 import { Input, Textarea } from '@heroui/input';
 import { NumberInput } from '@heroui/number-input';
-import type { ObjectId } from 'mongoose';
 import { useState } from 'react';
-import type { Product, ProductInput } from '../../../types/Product';
+import type { Product, ProductInput } from '../types/Product';
 import ErrorMessage from './ErrorMessage';
 
 export interface ProductFormEditData extends ProductInput {
-  _id: ObjectId | string;
+  _id: string;
 }
 interface ProductFormProps {
   product?: Product;

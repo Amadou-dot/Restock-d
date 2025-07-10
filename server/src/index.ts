@@ -7,7 +7,6 @@ import session from 'express-session';
 import http from 'http';
 import mongoose from 'mongoose';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { adminRouter } from './controllers/admin.js';
 import { authRouter } from './controllers/auth.js';
 import { cartRouter } from './controllers/cart.js';
@@ -17,8 +16,6 @@ import { sendErrorResponse } from './utils/errors.js';
 // Load environment variables
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const app: Application = express();
 const MongoDBStore = connectMongoDBSession(session);
 const store = new MongoDBStore({
@@ -57,14 +54,7 @@ app.use('/api', cartRouter);
 app.use('/api', orderRouter);
 app.use('/api/admin', adminRouter);
 
-// Serve static files from React build
-app.use(express.static(path.join(__dirname, '../../client/dist')));
-
-// Catch-all handler: send back React's index.html file for any non-API routes
-app.get('*', (_req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
-});
-
+// Error handling middleware
 app.use((err: Error, _req: Request, res: Response, _next: Function) => {
   sendErrorResponse(err, res);
 });

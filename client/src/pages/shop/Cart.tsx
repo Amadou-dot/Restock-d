@@ -1,5 +1,5 @@
 import { Spinner } from '@heroui/spinner';
-import type { PopulatedCartItem } from '../../../../types/Cart';
+import type { PopulatedCartItem } from '../../types/Cart';
 import { useCart } from '../../api/cart';
 import Alert from '../../components/Alert';
 import CartItemCard from '../../components/CartItemCard';

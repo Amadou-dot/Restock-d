@@ -1,5 +1,5 @@
 import { ButtonGroup } from '@heroui/button';
-import type { Product } from '../../../../types/Product';
+import type { Product } from '../../types/Product';
 import ProductCard from '../../components/ProductCard';
 import DeleteProductBtn from './DeleteProductBtn';
 import EditProductBtn from './EditProductBtn';

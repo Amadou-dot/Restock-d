@@ -1,4 +1,4 @@
-import type { ProductInput } from '../../../../types/Product';
+import type { ProductInput } from '../../types/Product';
 import { useAddProduct } from '../../api/products';
 import ProductForm, {
   type ProductFormEditData,

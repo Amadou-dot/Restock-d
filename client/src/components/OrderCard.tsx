@@ -1,5 +1,5 @@
 import { Button } from '@heroui/button';
-import type { Order } from '../../../types/Order';
+import type { Order } from '../types/Order';
 import { useGetInvoice } from '../api/orders';
 
 export default function OrderCard({ order }: { order: Order }) {

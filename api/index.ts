@@ -1,2 +1,3 @@
 // Export the Express app for Vercel
-export { default } from '../server/src/index.js';
+import app from '../server/src/index.js';
+export default app;

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import type { Order } from '../../../types/Order';
+import type { Order } from '../types/Order';
 import { apiFetch } from './utils';
 
 const SERVER_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';

@@ -1,6 +1,6 @@
 import { addToast } from '@heroui/toast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CartItem, PopulatedCart } from '../../../types/Cart';
+import type { CartItem, PopulatedCart } from '../types/Cart';
 import { apiFetch, createJsonBody } from './utils';
 
 const SERVER_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';

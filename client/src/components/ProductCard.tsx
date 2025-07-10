@@ -3,7 +3,7 @@ import { Image } from '@heroui/image';
 import { Spinner } from '@heroui/spinner';
 import { IoHeartOutline } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '../../../types/Product';
+import type { Product } from '../types/Product';
 import { useAuthStatus } from '../api/auth';
 import AddToCartButton from './ui/AddToCartButton';
 

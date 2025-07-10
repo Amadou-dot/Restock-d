@@ -1,6 +1,6 @@
 import { addToast } from '@heroui/toast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Product, ProductInput, ProductsResponse } from '../../../types/Product';
+import type { Product, ProductInput, ProductsResponse } from '../types/Product';
 import { apiFetch, createJsonBody } from './utils.js';
 
 const SERVER_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
