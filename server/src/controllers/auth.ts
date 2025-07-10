@@ -22,7 +22,7 @@ declare module 'express-session' {
 
 const router = Router();
 router.use(json());
-router.use(handleValidationErrors);
+
 // Check if user is logged in
 router.get('/status', async (req: Request, res: Response) => {
   const isLoggedIn = !!req.session.user; // Check if user is attached to session
@@ -33,6 +33,7 @@ router.get('/status', async (req: Request, res: Response) => {
 router.post(
   '/login',
   validateLogin,
+  handleValidationErrors,
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
@@ -61,6 +62,7 @@ router.post(
 router.post(
   '/signup',
   validateSignUp,
+  handleValidationErrors,
   async (req: Request, res: Response, next: NextFunction) => {
     const { firstName, lastName, email, password } = req.body;
 
@@ -117,13 +119,14 @@ router.post(
 router.post(
   '/password-reset',
   validateEmail,
+  handleValidationErrors,
   async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
 
     try {
       if (!email) throw new ValidationError('Email is required');
       const token = crypto.randomBytes(32).toString('hex');
-      const user = await User.findOne({ email }).exec();
+      const user = await User.findOne({ email }).exec(); // Find user by email
       if (!user) throw new ValidationError('User not found with this email');
       user.resetToken = token;
       user.resetTokenExpiration = new Date(Date.now() + 3600000); // Token valid for 1 hour
@@ -139,6 +142,7 @@ router.post(
 router.post(
   '/new-password',
   validatePasswordReset,
+  handleValidationErrors,
   async (req: Request, res: Response, next: NextFunction) => {
     const { password, token } = req.body;
     try {
@@ -161,4 +165,5 @@ router.post(
     }
   }
 );
+
 export const authRouter = router;

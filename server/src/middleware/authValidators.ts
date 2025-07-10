@@ -3,14 +3,14 @@ import { User } from '../models/user.js';
 import { ValidationError } from '../utils/errors.js';
 
 // Security-focused validators - let Mongoose handle most data validation
-const validateFirstName = body('firstName').trim().escape(); // Security: prevent XSS
+const validateFirstName = body('firstName').trim().escape();
 
-const validateLastName = body('lastName').trim().escape(); // Security: prevent XSS
+const validateLastName = body('lastName').trim().escape();
 
 const validateEmailSignUp = body('email')
   .trim()
   .normalizeEmail({ gmail_remove_dots: false })
-  .escape() // Security: prevent XSS
+  .escape()
   .custom(async value => {
     // Business logic: check for existing user (can't be done in Mongoose)
     const existingUser = await User.findOne({ email: value }).exec();
@@ -21,16 +21,34 @@ const validateEmailSignUp = body('email')
 
 export const validateEmail = body('email')
   .trim()
+  .isEmail()
   .normalizeEmail({ gmail_remove_dots: false })
-  .escape(); // Security: prevent XSS
+  .escape()
+  .withMessage('Invalid email format');
 
-const validatePasswordSignUp = body('password').trim().escape(); // Security: prevent XSS
+const validatePasswordSignUp = body('password')
+  .trim()
+  .escape()
+  .custom(async value => {
+    if (!value) throw new ValidationError('Password is required');
+    const hasUppercase = /[A-Z]/.test(value);
+    const hasSpecialChar = /[^a-zA-Z0-9]/.test(value);
+    if (!hasUppercase)
+      throw new ValidationError(
+        'Password must contain at least one uppercase letter'
+      );
+    if (!hasSpecialChar)
+      throw new ValidationError(
+        'Password must contain at least one special character'
+      );
+    return true;
+  });
 
-export const validatePassword = body('password').trim().escape(); // Security: prevent XSS
+export const validatePassword = body('password').trim().escape();
 
 const validateConfirmPassword = body('confirmPassword')
   .trim()
-  .escape() // Security: prevent XSS
+  .escape()
   .custom((value, { req }) => {
     // Business logic: cross-field validation (can't be done easily in Mongoose)
     if (value !== req.body.password) {
@@ -52,5 +70,5 @@ export const validateLogin = [validateEmail, validatePassword];
 export const validatePasswordReset = [
   validatePasswordSignUp,
   validateConfirmPassword,
-  body('token').trim().escape(), // Security: prevent XSS
+  body('token').trim().escape(),
 ];

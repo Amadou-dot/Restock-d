@@ -8,7 +8,7 @@ import { isAuth } from '../middleware/isAuth.js';
 import { validateOrderId } from '../middleware/orderValidators.js';
 import { Order } from '../models/order.js';
 import { uploadPDFToS3Bucket } from '../utils/AWSBucket.js';
-import { sendErrorResponse, ValidationError } from '../utils/errors.js';
+import { NotFoundError, sendErrorResponse, UnauthorizedError, ValidationError } from '../utils/errors.js';
 import { getUser } from '../utils/getUser.js';
 import { MESSAGES, sendSuccessResponse } from '../utils/responses.js';
 
@@ -86,7 +86,7 @@ router.get('/getOrder/:id', async (req: Request, res: Response) => {
     const orders = await user.getOrders();
     const order = orders.find(o => o._id.toString() === orderId.toString());
 
-    if (!order) throw new Error(`Order not found`);
+    if (!order) throw new NotFoundError(`Order not found`);
 
     return sendSuccessResponse(res, MESSAGES.ORDER_RETRIEVED, order);
   } catch (error) {
@@ -105,9 +105,9 @@ router.get(
       const orders = await user.getOrders();
       const order = orders.find(o => o._id.toString() === orderId.toString());
 
-      if (!order) throw new Error(`Order not found`);
+      if (!order) throw new NotFoundError(`Order not found`);
       if (!order.userId.equals(new mongoose.Types.ObjectId(user.id)))
-        throw new Error(`Unauthorized access`);
+        throw new UnauthorizedError(`Unauthorized access`);
 
       // Check if invoice URL already exists
       if (order.invoiceUrl) {

@@ -3,7 +3,7 @@ import { body } from 'express-validator';
 // Security-focused validators - let Mongoose handle data validation
 const validateProductName = body('name').trim().escape(); // Security: prevent XSS
 
-const validateProductPrice = body('price').trim().escape(); // Security: prevent XSS
+const validateProductPrice = body('price').trim().escape().isNumeric(); // Security: prevent XSS
 
 const validateProductDescription = body('description').trim().escape(); // Security: prevent XSS
 

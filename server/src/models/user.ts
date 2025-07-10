@@ -6,6 +6,7 @@ import type { IUserDocument } from '../../../types/User.js';
 import { Order } from './order.js';
 import { Product } from './product.js';
 import { PRODUCTS_PER_PAGE } from '../utils/constants.js';
+import { NotFoundError } from '../utils/errors.js';
 
 const Schema = mongoose.Schema;
 
@@ -54,16 +55,6 @@ const userSchema = new Schema<IUserDocument>({
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters long'],
     select: false, // Do not return password in queries by default
-    validate: {
-      validator: function (v: string) {
-        // Check for at least 1 uppercase letter and 1 special character
-        const hasUppercase = /[A-Z]/.test(v);
-        const hasSpecialChar = /[^a-zA-Z0-9]/.test(v);
-        return hasUppercase && hasSpecialChar;
-      },
-      message:
-        'Password must include at least 1 uppercase letter and 1 special character',
-    },
   },
   resetToken: {
     type: String,
@@ -205,7 +196,7 @@ userSchema.methods.deleteItemFromCart = async function (
     (item: CartItem) => item.productId.toString() === productId.toString()
   );
 
-  if (itemIndex === -1) return; // Item not found in cart
+  if (itemIndex === -1) throw new NotFoundError('Item not found in cart'); // Item not found in cart
 
   const productPrice = await Product.findById(productId).select('price');
 
@@ -281,15 +272,17 @@ userSchema.methods.getCreatedProducts = async function (
   page: number = 1
 ) {
   // Get total count of products created by this user
-  const totalProducts = await Product.find({ userId: this._id }).countDocuments();
+  const totalProducts = await Product.find({
+    userId: this._id,
+  }).countDocuments();
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
-  
+
   // Get products created by this user for the current page
   const products = await Product.find({ userId: this._id })
     .skip(page > 0 ? (page - 1) * PRODUCTS_PER_PAGE : 0)
     .limit(PRODUCTS_PER_PAGE)
     .sort({ createdAt: -1 });
-  
+
   return {
     products,
     totalPages: totalPages > 0 ? totalPages : 0,

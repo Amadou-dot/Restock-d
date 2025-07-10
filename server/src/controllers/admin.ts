@@ -121,7 +121,9 @@ router.delete(
       const user = await getUser(req);
       if (!user) throw new ValidationError('User not authenticated');
 
-      await user.deleteItemFromCart(id);
+      try {
+        await user.deleteItemFromCart(id);
+      } catch (error) {} // Ignore errors if the product is not in the cart
       const result = await Product.findByIdAndDelete({
         _id: id,
         userId: user._id,

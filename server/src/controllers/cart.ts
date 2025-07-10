@@ -31,7 +31,7 @@ router.post('/addToCart', json(), async (req: Request, res: Response) => {
     if (!productId) throw new ValidationError('Product ID is required');
 
     const product = await Product.findById(productId);
-    if (!product) throw new NotFoundError(`Product with not found`);
+    if (!product) throw new NotFoundError(`Product not found`);
     await user.addToCart(product, quantity);
     sendSuccessResponse(
       res,
