@@ -53,8 +53,8 @@ router.post('/placeOrder', async (req: Request, res: Response) => {
         quantity: item.quantity,
       })),
       mode: 'payment',
-      success_url: `${process.env.CLIENT_URL}/checkout/success`,
-      cancel_url: `${process.env.CLIENT_URL}/cart`,
+      success_url: `${process.env.CLIENT_URL || 'https://restockd.aseck.dev'}/checkout/success`,
+      cancel_url: `${process.env.CLIENT_URL || 'https://restockd.aseck.dev'}/cart`,
     });
 
     return sendSuccessResponse(res, MESSAGES.ORDER_PLACED, {

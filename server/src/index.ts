@@ -30,7 +30,7 @@ const store = new MongoDBStore({
 // Allow CORS for React app
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL || 'https://restockd.aseck.dev',
     credentials: true,
   })
 );
@@ -45,7 +45,8 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 1, // 1 day
       secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      sameSite: true, // Adjust as needed
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Adjust for cross-origin in production
+      httpOnly: true, // Prevent XSS attacks
     },
   })
 );
@@ -69,19 +70,34 @@ app.use((err: Error, _req: Request, res: Response, _next: Function) => {
 });
 
 const PORT = process.env.PORT || 3000;
-const server = http.createServer(app);
 
-try {
-  // Connect to the database
-  await mongoose.connect(
-    process.env.MONGODB_URI || 'mongodb://localhost:27017/shop'
-  );
+// Initialize database connection
+const initializeDatabase = async () => {
+  try {
+    await mongoose.connect(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017/shop'
+    );
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('Unable to connect to the database:', (error as Error).message);
+  }
+};
 
-  server.listen(PORT, () => {
-    console.log(`> Server is running on http://localhost:${PORT}`);
+// For Vercel deployment, export the app
+export default app;
+
+// For local development, start the server
+if (process.env.NODE_ENV !== 'production') {
+  const server = http.createServer(app);
+  
+  initializeDatabase().then(() => {
+    server.listen(PORT, () => {
+      console.log(`> Server is running on http://localhost:${PORT}`);
+    });
   });
-} catch (error) {
-  console.error('Unable to connect to the database:', (error as Error).message);
+} else {
+  // Initialize database for production
+  initializeDatabase();
 }
 
 // TODO: update CORS settings for production

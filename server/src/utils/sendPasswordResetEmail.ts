@@ -6,7 +6,7 @@ export const sendPasswordResetEmail = async (
   token: string
 ) => {
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const resetLink = `${process.env.CLIENT_URL}/new-password/${token}`;
+  const resetLink = `${process.env.CLIENT_URL || 'https://restockd.aseck.dev'}/new-password/${token}`;
 
   try {
     await resend.emails.send({

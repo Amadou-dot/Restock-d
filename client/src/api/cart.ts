@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CartItem, PopulatedCart } from '../../../types/Cart';
 import { apiFetch, createJsonBody } from './utils';
 
-const SERVER_URL = 'http://localhost:3000/api';
+const SERVER_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 /**
  * Custom hook to fetch the current user's cart

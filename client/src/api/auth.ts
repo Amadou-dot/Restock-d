@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { apiFetch, createJsonBody } from './utils';
 
-const AUTH_URL = 'http://localhost:3000/api/auth';
+const AUTH_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/auth`;
 
 /**
  * Fetches the current authentication status of the user.

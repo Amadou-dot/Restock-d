@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Product, ProductInput, ProductsResponse } from '../../../types/Product';
 import { apiFetch, createJsonBody } from './utils.js';
 
-const SERVER_URL = 'http://localhost:3000/api';
-const SERVER_URL_ADMIN = 'http://localhost:3000/api/admin';
+const SERVER_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const SERVER_URL_ADMIN = `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/admin`;
 
 // Query functions
 
