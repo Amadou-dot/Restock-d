@@ -24,10 +24,9 @@ const store = new MongoDBStore({
   expires: 1000 * 60 * 60 * 24 * 1, // 1 day
 });
 
-// Allow CORS for React app
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'https://restockd.aseck.dev',
+    origin: '*',
     credentials: true,
   })
 );
@@ -69,7 +68,10 @@ const initializeDatabase = async () => {
     );
     console.log('Connected to MongoDB');
   } catch (error) {
-    console.error('Unable to connect to the database:', (error as Error).message);
+    console.error(
+      'Unable to connect to the database:',
+      (error as Error).message
+    );
   }
 };
 
@@ -79,7 +81,7 @@ export default app;
 // For local development, start the server
 if (process.env.NODE_ENV !== 'production') {
   const server = http.createServer(app);
-  
+
   initializeDatabase().then(() => {
     server.listen(PORT, () => {
       console.log(`> Server is running on http://localhost:${PORT}`);
