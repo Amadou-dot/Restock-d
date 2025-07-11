@@ -26,9 +26,11 @@ const store = new MongoDBStore({
 
 app.use(
   cors({
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['https://restockd.aseck.dev', 'https://www.restockd.aseck.dev']
+      : [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:3000'],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'Content-Type',
       'Authorization',
@@ -59,6 +61,19 @@ app.use(
     },
   })
 );
+
+// Handle preflight OPTIONS requests for all routes
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 
+    process.env.NODE_ENV === 'production' 
+      ? 'https://restockd.aseck.dev' 
+      : req.headers.origin || 'http://localhost:5173'
+  );
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, User-Agent, Referer, Cookie');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
 
 app.use('/api', productsRouter);
 app.use('/api/auth', authRouter);
