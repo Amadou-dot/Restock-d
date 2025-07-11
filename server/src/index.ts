@@ -89,5 +89,3 @@ if (process.env.NODE_ENV !== 'production') {
   // Initialize database for production
   initializeDatabase();
 }
-
-// TODO: update CORS settings for production
