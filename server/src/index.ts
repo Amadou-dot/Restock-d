@@ -16,6 +16,28 @@ import { sendErrorResponse } from './utils/errors.js';
 // Load environment variables
 dotenv.config();
 
+// Global database connection promise
+let dbConnectionPromise: Promise<typeof mongoose> | null = null;
+
+// Initialize database connection
+const initializeDatabase = async () => {
+  try {
+    if (!dbConnectionPromise) {
+      dbConnectionPromise = mongoose.connect(
+        process.env.MONGODB_URI || 'mongodb://localhost:27017/shop'
+      );
+    }
+    await dbConnectionPromise;
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error(
+      'Unable to connect to the database:',
+      (error as Error).message
+    );
+    throw error;
+  }
+};
+
 const app: Application = express();
 const MongoDBStore = connectMongoDBSession(session);
 const store = new MongoDBStore({
@@ -42,8 +64,30 @@ app.use(
       'Cookie',
     ],
     exposedHeaders: ['Set-Cookie'],
+    optionsSuccessStatus: 200, // For legacy browser support
   })
 );
+
+// Handle preflight OPTIONS requests for all routes
+app.options('*', cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://restockd.aseck.dev', 'https://www.restockd.aseck.dev']
+    : [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'User-Agent',
+    'Referer',
+    'Cookie',
+  ],
+  exposedHeaders: ['Set-Cookie'],
+  optionsSuccessStatus: 200,
+}));
 
 app.use(cookieParser());
 app.use(express.json());
@@ -62,18 +106,15 @@ app.use(
   })
 );
 
-// Handle preflight OPTIONS requests for all routes
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 
-    process.env.NODE_ENV === 'production' 
-      ? 'https://restockd.aseck.dev' 
-      : req.headers.origin || 'http://localhost:5173'
-  );
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, User-Agent, Referer, Cookie');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(200);
-});
+// For Vercel, ensure database is connected before handling requests
+if (process.env.NODE_ENV === 'production') {
+  app.use(async (req, res, next) => {
+    if (mongoose.connection.readyState === 0) {
+      await initializeDatabase();
+    }
+    next();
+  });
+}
 
 app.use('/api', productsRouter);
 app.use('/api/auth', authRouter);
@@ -88,21 +129,6 @@ app.use((err: Error, _req: Request, res: Response, _next: Function) => {
 
 const PORT = process.env.PORT || 3000;
 
-// Initialize database connection
-const initializeDatabase = async () => {
-  try {
-    await mongoose.connect(
-      process.env.MONGODB_URI || 'mongodb://localhost:27017/shop'
-    );
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error(
-      'Unable to connect to the database:',
-      (error as Error).message
-    );
-  }
-};
-
 // For Vercel deployment, export the app
 export default app;
 
@@ -115,7 +141,4 @@ if (process.env.NODE_ENV !== 'production') {
       console.log(`> Server is running on http://localhost:${PORT}`);
     });
   });
-} else {
-  // Initialize database for production
-  initializeDatabase();
 }
